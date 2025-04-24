@@ -1,0 +1,27 @@
+name: plant-it
+services:
+  server:
+    image: msdeluise/plant-it-server:latest
+    env_file: server.env
+    depends_on:
+      - db
+      - cache
+    restart: unless-stopped
+    volumes:
+      - "/media/whome/config/plantit/upload-dir:/upload-dir"
+    ports:
+      - "8550:8080"
+      - "8551:3000"
+
+  db:
+    image: mysql:8.0
+    restart: always
+    env_file: server.env
+    volumes:
+      - "/media/whome/config/plantit/db:/var/lib/mysql"
+
+  cache:
+    image: redis:7.2.1
+    restart: always
+    volumes:
+      - "/media/whome/config/plantit/redis:/data"

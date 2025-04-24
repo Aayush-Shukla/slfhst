@@ -1,0 +1,149 @@
+name: media-stack
+services:
+
+  vpn:
+    profiles: ["vpn"]
+    container_name: vpn
+    image: qmcgaw/gluetun:v3.40.0
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:-nordvpn}
+      - OPENVPN_USER=${OPENVPN_USER:-""}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD:-""}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES:-Switzerland}
+    networks:
+      - mynetwork
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    restart: "unless-stopped"
+
+  qbittorrent:
+    profiles: ["vpn", "no-vpn"]
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:5.0.4
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=5080
+    volumes:
+      - /media/whome/config/qbittorrent:/config
+      - /media/whome/downloads:/downloads
+    ports:
+      - 5080:5080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: "unless-stopped"
+
+  radarr:
+    profiles: ["vpn", "no-vpn"]
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr:5.18.4
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    ports:
+      - 7878:7878
+    volumes:
+      - /media/whome/config/radarr:/config
+      - /media/whome/downloads:/downloads
+      - /media/uncloud/Movies:/movies
+    restart: "unless-stopped"
+
+  sonarr:
+    profiles: ["vpn", "no-vpn"]
+    image: linuxserver/sonarr:4.0.13
+    container_name: sonarr
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /media/whome/config/sonarr:/config
+      - /media/whome/downloads:/downloads
+      - /media/uncloud/Series:/tv
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  prowlarr:
+    profiles: ["vpn", "no-vpn"]
+    container_name: prowlarr
+    image: linuxserver/prowlarr:1.30.2
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /media/whome/config/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  jellyseerr:
+    profiles: ["vpn", "no-vpn"]
+    image: fallenbagel/jellyseerr:2.3.0
+    container_name: jellyseerr
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /media/whome/config/jellyseerr:/app/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+
+  jellyfin:
+    profiles: ["vpn", "no-vpn"]
+    image: linuxserver/jellyfin:10.10.6
+    container_name: jellyfin
+    networks:
+      - mynetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /media/whome/config/jellyfin:/config
+      - /media/whome/downloads:/data
+      - /media/uncloud/Movies:/movies
+      - /media/uncloud/Series:/tv
+    ports:
+      - 8096:8096
+      - 7359:7359/udp
+      - 8920:8920
+    restart: unless-stopped
+
+  recommendarr:
+    profiles: ["recommendarr"]
+    container_name: recommendarr
+    image: tannermiddleton/recommendarr:v1.2.70
+    networks:
+      - mynetwork
+    environment:
+      - NODE_ENV=production
+      - DOCKER_ENV=true
+      - PORT=8099
+      - PUBLIC_URL=https://localhost:8099
+    volumes:
+      - /media/whome/config/recommendarr:/app/server/data
+    ports:
+      - 8099:8099
+    restart: unless-stopped
+
+networks:
+  mynetwork:
+    external: true

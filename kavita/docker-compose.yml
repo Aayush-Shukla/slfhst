@@ -1,0 +1,15 @@
+services:
+  kavita:
+    image: lscr.io/linuxserver/kavita:latest
+    container_name: kavita
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+    volumes:
+      - ~/config/kavita:/config
+      - /media/uncloud/books:/books #optional
+    ports:
+      - 5000:5000
+    restart: unless-stopped

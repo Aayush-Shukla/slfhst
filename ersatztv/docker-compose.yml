@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ersatztv:
+    image: jasongdove/ersatztv:latest-arm64
+    container_name: ersatztv
+    environment:
+      - TZ=Asia/Kolkata
+    ports:
+      - "8409:8409"
+    volumes:
+      - /media/whome/config/ersatztv/config:/root/.local/share/ersatztv
+      - /media/whome/config/ersatztv/media:/media:ro
+    restart: unless-stopped
+

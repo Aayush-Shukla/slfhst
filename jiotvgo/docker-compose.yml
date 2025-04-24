@@ -1,0 +1,17 @@
+services:
+  jiotv_go:
+    image: ghcr.io/jiotv-go/jiotv_go
+    ports:
+      - "5001:5001"
+    volumes:
+      - jiotv_go:/app/.jiotv_go
+    environment:
+      - JIOTV_PATH_PREFIX=/app/.jiotv_go
+      - TZ=Asia/Kolkata
+      # below is optional, but we strongly recommend setting it to true. Read https://t.me/jiotv_go/128 for more information.
+      - JIOTV_DRM=false
+      # Read https://jiotv_go.rabil.me/config.html to know all configuration options.
+      - JIOTV_EPG=true
+      
+volumes:
+  jiotv_go:
