@@ -11,8 +11,8 @@ services:
       - TZ=Asia/Kolkata
       - CRON_MIN=1,31
     volumes:
-      - ~/config/freshrss/freshrss_data:/var/www/FreshRSS/data
-      - ~/config/freshrss/freshrss_extensions:/var/www/FreshRSS/extensions
+      - /media/whome/config/freshrss/freshrss_data:/var/www/FreshRSS/data
+      - /media/whome/config/freshrss/freshrss_extensions:/var/www/FreshRSS/extensions
     logging:
       options:
         max-size: "10m"
