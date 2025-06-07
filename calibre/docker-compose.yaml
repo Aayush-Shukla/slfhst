@@ -1,0 +1,19 @@
+---
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD= #optional
+      - CLI_ARGS= #optional
+    volumes:
+      - /media/whome/config/calibre:/config
+      - /media/uncloud/books:/books
+    ports:
+      - 8223:8080
+      - 8224:8181
+      - 8225:8081
+    restart: unless-stopped
