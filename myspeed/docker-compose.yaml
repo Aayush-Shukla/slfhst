@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  myspeed:
+    image: germannewsmaker/myspeed
+    container_name: MySpeed
+    ports:
+      - "5216:5216"
+    volumes:
+      - /media/whome/config/myspeed:/myspeed/data
+    restart: unless-stopped
+
+volumes:
+  myspeed:
